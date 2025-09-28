@@ -145,6 +145,10 @@
     z-index: 10;
     animation: pulse 2s infinite ease-in-out;
   }
+
+  .brezel-img {
+    width: 30vw;
+  }
   
   @keyframes pulse {
       0% {
