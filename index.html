@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>kimmis bayernparty – RSVP</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="container">
+    <header>
+        <img src="img/kimmi2.png">
+      </header>
+
+    <section id="step-identity" class="card">
+        <h2>Wer bist du?</h2>
+        <form id="identityForm" autocomplete="off" novalidate>
+          <div class="form-control">
+            <input id="guestName" name="guestName" class="input input-alt" placeholder="Dein Name" required="" type="text">
+            <span class="input-border input-border-alt"></span>
+          </div>
+          <fieldset class="avatar-fieldset">
+            <h2>Wähle deinen Avatar</h2>
+            <div class="avatar-carousel">
+              <button type="button" class="avatar-arrow left" aria-label="Vorheriger Avatar"><img class="arrow" src="img/arrow.png"></button>
+          
+              <div class="avatar-display">
+                <img id="avatarImage" src="img/avatars/cat.png" alt="Avatar Vorschau" />
+              </div>
+          
+              <button type="button" class="avatar-arrow right" aria-label="Nächster Avatar"><img class="arrow" src="img/arrow.png"></button>
+            </div>
+            <!-- hidden input will store current value -->
+            <input type="hidden" name="avatar" id="avatarInput" value="girl" />
+          </fieldset>
+  
+          <button class="btn" type="submit">Weiter</button>
+        </form>
+      </section>
+
+
+    <section id="step-sort" class="card hidden">
+      <div class="instructions">
+        <div class="img-container">
+          <img  class="avatar" src="img/avatars/thingy.png">
+        </div>
+        <h2 class="bubble">hi marius! zieh die breze in den passenden korb:</h2>
+      </div>
+      <img id="ticket" class="brezel" draggable="true" aria-grabbed="false" src="img/brezel.png">
+        <div class="baskets">
+          <div class="basket basket1" data-choice="yes" tabindex="0" aria-dropeffect="move">
+            <img src="img/basket1.png" data-breze-src="img/basket1breze.png" alt="">
+            <div class="note"><p>bin dabei!</p></div>
+          </div>
+        
+          <div class="basket basket2" data-choice="yes_plus_one" tabindex="0" aria-dropeffect="move">
+            <img src="img/basket3.png" data-breze-src="img/basket3breze.png" alt="">
+            <div class="note"><p>bin dabei und bringe wen mit!</p></div>
+          </div>
+        
+          <div class="basket basket3" data-choice="no" tabindex="0" aria-dropeffect="move">
+            <img src="img/basket2.png" data-breze-src="img/basket2breze.png" alt="">
+            <div class="note"><p>kann nicht :(</p></div>
+          </div>
+        </div>
+    </section>
+  <script src="app.js" defer></script>
+</body>
+</html>
