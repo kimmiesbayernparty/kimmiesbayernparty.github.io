@@ -241,6 +241,31 @@
     padding: 1rem;
   }
 
+  #ticket {
+    touch-action: none;          /* stops panning/zooming gestures on the element */
+    -webkit-user-drag: none;     /* iOS: disable native image drag ghosting */
+    user-select: none;           /* no text/image selection handles */
+    pointer-events: auto;
+  }
+  
+  /* drop zones shouldn’t pan either while dragging */
+  .baskets, .basket {
+    touch-action: none;
+  }
+  
+  /* optional: reduce “pull to refresh” / overscroll bounce during drag */
+  html, body {
+    overscroll-behavior: contain;  /* modern iOS/Android */
+  }
+
+  /* when dragging, freeze the viewport to stop accidental scroll */
+.drag-lock,
+.drag-lock body {
+  height: 100%;
+  overflow: hidden;
+}
+
+
 
 
 

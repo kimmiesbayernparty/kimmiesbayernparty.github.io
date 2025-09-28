@@ -10,7 +10,7 @@ const identityForm = $('#identityForm');
 const guestNameInput = $('#guestName');
 const ticket       = $('#ticket');              // draggable brezel
 const doneMessage  = $('#doneMessage');         // not used when staying on same screen
-const undoBtn      = $('#undoBtn');             // if this lives in #step-done it won't show; consider moving it into #step-sort
+const undoBtn      = $('#undoBtn');             // move this into #step-sort if you want it visible
 const hp           = $('#hp_website');
 
 const avatarImage  = $('#avatarImage');
@@ -20,15 +20,15 @@ const avatarInput  = $('#avatarInput');
 const baskets      = $$('.basket');
 
 // In-place title management (first h2 = main title, second h2 = instruction)
-const sortTitleMain = $('#step-sort h2:nth-of-type(1)');
+const sortTitleMain  = $('#step-sort h2:nth-of-type(1)');
 const sortTitleInstr = $('#step-sort h2:nth-of-type(2)');
-const defaultSortTitle = sortTitleMain ? sortTitleMain.textContent : '';
+const defaultSortTitle  = sortTitleMain ? sortTitleMain.textContent : '';
 const defaultInstrTitle = sortTitleInstr ? sortTitleInstr.textContent : '';
 
 // ===== App state =====
 let state = {
   name: '',
-  avatar: '',           // "girl" | "boy"
+  avatar: '',           // "girl" | "boy" (or your custom values)
   choice: '',           // "yes" | "yes_plus_one" | "no"
   submittedAt: null
 };
@@ -37,18 +37,18 @@ let state = {
 let filledBasket = null;
 
 // ===== DEV toggle =====
-const DEV_SKIP_REGISTRATION = false;
+const DEV_SKIP_REGISTRATION = false;  // set true while designing
 const DEV_DEFAULT_NAME   = 'Gast';
 const DEV_DEFAULT_AVATAR = 'girl';
 
 // ===== Avatars (carousel) =====
 const avatars = [
-  { value: "bunny",  label: "bunny", src: "img/avatars/bunny.png"  },
-  { value: "frog", src: "img/avatars/frog.png"  },
-  { value: "devil", src: "img/avatars/devil.png"  },
-  { value: "monk", src: "img/avatars/monk.png"  },
-  { value: "thingy", src: "img/avatars/thingy.png"  },
-  { value: "cat", label: "cat",    src: "img/avatars/cat.png" },
+  { value: "bunny",  label: "bunny",  src: "img/avatars/bunny.png"  },
+  { value: "frog",   label: "frog",   src: "img/avatars/frog.png"   },
+  { value: "devil",  label: "devil",  src: "img/avatars/devil.png"  },
+  { value: "monk",   label: "monk",   src: "img/avatars/monk.png"   },
+  { value: "thingy", label: "thingy", src: "img/avatars/thingy.png" },
+  { value: "cat",    label: "cat",    src: "img/avatars/cat.png"    },
 ];
 let avatarIndex = 0;
 
@@ -59,7 +59,7 @@ function switchAvatar(dir) {
   avatarIndex = (avatarIndex + dir + avatars.length) % avatars.length;
   const current = avatars[avatarIndex];
   if (avatarImage) avatarImage.src = current.src;
-  if (avatarLabel) avatarLabel.textContent = current.label;
+  if (avatarLabel) avatarLabel.textContent = current.label || '';
   if (avatarInput) avatarInput.value = current.value;
   state.avatar = current.value;
 }
@@ -106,12 +106,30 @@ if (!DEV_SKIP_REGISTRATION && identityForm) {
   });
 }
 
-// ===== Drag & Drop: ticket -> basket =====
+// ===== Drag & Drop: ticket -> basket (with scroll lock) =====
+let isDragging = false;
+
 ticket?.addEventListener('dragstart', (e) => {
+  isDragging = true;
   e.dataTransfer.setData('text/plain', 'rsvp-ticket');
+  // Optional nicer drag ghost:
+  // e.dataTransfer.setDragImage(ticket, ticket.width / 2, ticket.height / 2);
   ticket.setAttribute('aria-grabbed', 'true');
+  document.documentElement.classList.add('drag-lock');
 });
-ticket?.addEventListener('dragend', () => ticket.setAttribute('aria-grabbed', 'false'));
+
+ticket?.addEventListener('dragend', () => {
+  isDragging = false;
+  ticket.setAttribute('aria-grabbed', 'false');
+  document.documentElement.classList.remove('drag-lock');
+});
+
+// Mobile Safari/Chrome: cancel touchmove while dragging (prevents page scroll)
+window.addEventListener(
+  'touchmove',
+  (e) => { if (isDragging) e.preventDefault(); },
+  { passive: false }
+);
 
 baskets.forEach(b => {
   b.addEventListener('dragover', (e) => { e.preventDefault(); b.classList.add('drag-over'); });
@@ -150,11 +168,7 @@ function onChoice(choice) {
 
 function showDone() {
   // build your inline done message
-  const map1 = {
-    yes: 'juhu',
-    yes_plus_one: 'juhu',
-    no: 'schade'
-  };
+  const map1 = { yes: 'juhu', yes_plus_one: 'juhu', no: 'schade' };
   const map2 = {
     yes: '! du kommst.',
     yes_plus_one: '! du kommst mit begleitung. ',
@@ -260,4 +274,5 @@ function deriveBrezeSrc(original) {
   // "img/basket1.png" -> "img/basket1breze.png"
   return original ? original.replace(/(\.[a-z]+)$/i, 'breze$1') : '';
 }
+
 
