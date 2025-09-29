@@ -60,21 +60,7 @@
     padding: 0;
   }
 
-  .avatar-option {
-    display: inline-flex;
-    align-items: center;
-    gap: .5rem;
-    margin-right: 1rem;
-    border: 1px solid #ddd;
-    border-radius: 12px;
-    padding: .5rem .6rem;
-    cursor: pointer;
-    user-select: none;
-  }
-  .avatar-option input { margin: 0; }
-  .avatar-option img {
-    width: 44px; height: 44px; border-radius: 10px; display: block;
-  }
+
 
   .avatar-carousel {
     width: 100%;
@@ -177,8 +163,39 @@
     padding: 1rem;
     text-align: center;
     border-radius: 5rem;
-    border: var(--ink) 2px solid;
-  }
+    border: var(--ink) 1.5px solid;
+    position: relative;
+    }
+    
+    .bubble:after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 0;
+      height: 0;
+      border: 20px solid transparent;
+      border-right-color: #fafbf5;
+      border-left: 0;
+      border-bottom: 0;
+      margin-top: -10px;
+      margin-left: -17px;
+    }
+
+    .bubble:before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 52%;
+      width: 0;
+      height: 0;
+      border: 20px solid transparent;
+      border-right-color: #000000;
+      border-left: 0;
+      border-bottom: 0;
+      margin-top: -10px;
+      margin-left: -20px;
+    }
 
   .img-container {
     max-width: 15vh;
@@ -198,14 +215,8 @@
   
   .brezel {
     width: 20vw;
-    height: 20vw;
     z-index: 10;
-    animation: pulse 2s infinite ease-in-out;
-    background-image: url(img/brezel.png);
-    background-position: center;
-    background-size: contain;
-    background-repeat: no-repeat;
-    
+    animation: pulse 2s infinite ease-in-out; 
   }
 
   @keyframes pulse {
@@ -260,46 +271,3 @@
   justify-content: center;
   text-align: center;
   }
-
-  .basket.drag-over {
-    transform: translateY(-2px) scale(1.01);
-  }
-
-
-  #step-sort.is-done .brezel { display: none; }
-
-  
-
-  
-
-  
-
-  #ticket {
-    touch-action: none;          /* stops panning/zooming gestures on the element */
-    -webkit-user-drag: none;     /* iOS: disable native image drag ghosting */
-    user-select: none;           /* no text/image selection handles */
-    pointer-events: auto;
-  }
-  
-  /* drop zones shouldn’t pan either while dragging */
-  .baskets, .basket {
-    touch-action: none;
-  }
-  
-  /* optional: reduce “pull to refresh” / overscroll bounce during drag */
-  html, body {
-    overscroll-behavior: contain;  /* modern iOS/Android */
-  }
-
-  /* when dragging, freeze the viewport to stop accidental scroll */
-.drag-lock,
-.drag-lock body {
-  height: 100%;
-  overflow: hidden;
-}
-
-
-
-
-
-

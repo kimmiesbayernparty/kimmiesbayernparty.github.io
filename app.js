@@ -3,33 +3,30 @@ const $ = (sel, ctx = document) => ctx.querySelector(sel);
 const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
 
 // ===== DOM refs =====
-const stepIdentity = $('#step-identity');
-const stepSort     = $('#step-sort');
-const stepDone     = $('#step-done');           // not used when staying on same screen
-const identityForm = $('#identityForm');
+const stepIdentity   = $('#step-identity');
+const stepSort       = $('#step-sort');
+const identityForm   = $('#identityForm');
 const guestNameInput = $('#guestName');
-const ticket       = $('#ticket');              // draggable brezel
-const doneMessage  = $('#doneMessage');         // not used when staying on same screen
-const undoBtn      = $('#undoBtn');             // move this into #step-sort if you want it visible
-const hp           = $('#hp_website');
+const hp             = $('#hp_website');
 
-const avatarImage  = $('#avatarImage');
-const avatarLabel  = $('#avatarLabel');         // may be null
-const avatarInput  = $('#avatarInput');
+const avatarImage    = $('#avatarImage');   // carousel preview in step 1
+const avatarLabel    = $('#avatarLabel');   // may be null
+const avatarInput    = $('#avatarInput');   // hidden input in step 1
 
-const baskets      = $$('.basket');
+const chosenAvatar   = $('#chosenAvatar');  // avatar shown in step 2
+const nameSpan       = $('#guestNameSpan'); // name inside step 2 bubble
+const bubbleEl       = $('#step-sort .bubble');
+const defaultBubble  = bubbleEl ? bubbleEl.textContent : '';
 
-// In-place title management (first h2 = main title, second h2 = instruction)
-const sortTitleMain  = $('#step-sort h2:nth-of-type(1)');
-const sortTitleInstr = $('#step-sort h2:nth-of-type(2)');
-const defaultSortTitle  = sortTitleMain ? sortTitleMain.textContent : '';
-const defaultInstrTitle = sortTitleInstr ? sortTitleInstr.textContent : '';
+const baskets        = $$('.basket');       // dropzones
+const ticketContainer= $('.ticket-container'); // container holding the .brezel
+const undoBtn        = $('#undoBtn');       // optional
 
 // ===== App state =====
 let state = {
   name: '',
-  avatar: '',           // "girl" | "boy" (or your custom values)
-  choice: '',           // "yes" | "yes_plus_one" | "no"
+  avatar: '',
+  choice: '',            // "yes" | "yes_plus_one" | "no"
   submittedAt: null
 };
 
@@ -37,9 +34,9 @@ let state = {
 let filledBasket = null;
 
 // ===== DEV toggle =====
-const DEV_SKIP_REGISTRATION = false;  // set true while designing
+const DEV_SKIP_REGISTRATION = false;   // turn false for real flow
 const DEV_DEFAULT_NAME   = 'Gast';
-const DEV_DEFAULT_AVATAR = 'girl';
+const DEV_DEFAULT_AVATAR = 'cat';     // must exist in avatars[].value
 
 // ===== Avatars (carousel) =====
 const avatars = [
@@ -48,7 +45,7 @@ const avatars = [
   { value: "devil",  label: "devil",  src: "img/avatars/devil.png"  },
   { value: "monk",   label: "monk",   src: "img/avatars/monk.png"   },
   { value: "thingy", label: "thingy", src: "img/avatars/thingy.png" },
-  { value: "cat",    label: "cat",    src: "img/avatars/cat.png"    },
+  { value: "cat",    label: "cat",    src: "img/avatars/cat2.png"    },
 ];
 let avatarIndex = 0;
 
@@ -66,13 +63,28 @@ function switchAvatar(dir) {
 
 // ===== Init after DOM is ready =====
 document.addEventListener('DOMContentLoaded', () => {
+  // Ensure the pretzel img exists and is safe for mobile (no native drag)
+  let brezel = document.querySelector('.ticket-container .brezel');
+  if (!brezel) {
+    brezel = new Image();
+    brezel.className = 'brezel';
+    brezel.src = 'img/brezel.png';
+    brezel.alt = 'Breze';
+    document.querySelector('.ticket-container')?.appendChild(brezel);
+  }
+  brezel.setAttribute('draggable', 'false'); // prevent native image drag
+
   if (DEV_SKIP_REGISTRATION) {
     state.name = DEV_DEFAULT_NAME;
     state.avatar = DEV_DEFAULT_AVATAR;
+    if (avatarInput) avatarInput.value = DEV_DEFAULT_AVATAR;
+
+    hydrateSortStep();                 // fill avatar + name in step 2
     stepIdentity?.classList.add('hidden');
     stepSort?.classList.remove('hidden');
-    if (avatarInput) avatarInput.value = DEV_DEFAULT_AVATAR;
   }
+
+  initDroppable(); // Shopify Draggable init
 });
 
 // ===== Identity submit (only when not skipping) =====
@@ -91,83 +103,89 @@ if (!DEV_SKIP_REGISTRATION && identityForm) {
     state.name   = name;
     state.avatar = avatar;
 
-    ticket?.setAttribute('aria-grabbed', 'false');
+    hydrateSortStep();                 // fill avatar + name in step 2
     stepIdentity?.classList.add('hidden');
     stepSort?.classList.remove('hidden');
 
+    // (Optional) Restore previous for same name
     const saved = localStorage.getItem('kimmis_bayernparty_rsvp');
     if (saved) {
       const prev = JSON.parse(saved);
       if (prev.name === name) {
         state = prev;
-        showDone();
+        showDone(); // will update bubble & visuals
       }
     }
   });
 }
 
-// ===== Drag & Drop: ticket -> basket (with scroll lock) =====
-let isDragging = false;
+// ===== Hydrate step 2 with chosen data =====
+function hydrateSortStep() {
+  if (nameSpan) nameSpan.textContent = state.name || 'Gast';
 
-ticket?.addEventListener('dragstart', (e) => {
-  isDragging = true;
-  e.dataTransfer.setData('text/plain', 'rsvp-ticket');
-  // Optional nicer drag ghost:
-  // e.dataTransfer.setDragImage(ticket, ticket.width / 2, ticket.height / 2);
-  ticket.setAttribute('aria-grabbed', 'true');
-  document.documentElement.classList.add('drag-lock');
-});
+  const pickedValue = (avatarInput && avatarInput.value) || state.avatar;
+  const match = avatars.find(a => a.value === pickedValue);
+  if (match && chosenAvatar) {
+    chosenAvatar.src = match.src;
+    chosenAvatar.alt = `Avatar: ${match.label || match.value}`;
+  }
+}
 
-ticket?.addEventListener('dragend', () => {
-  isDragging = false;
-  ticket.setAttribute('aria-grabbed', 'false');
-  document.documentElement.classList.remove('drag-lock');
-});
+// ===== Shopify Droppable init =====
+function initDroppable() {
+  const DroppableCtor =
+    (window.Draggable && window.Draggable.Droppable) ||
+    (window.Droppable && window.Droppable.default);
 
-// Mobile Safari/Chrome: cancel touchmove while dragging (prevents page scroll)
-window.addEventListener(
-  'touchmove',
-  (e) => { if (isDragging) e.preventDefault(); },
-  { passive: false }
-);
+  if (!DroppableCtor) {
+    console.error('Shopify Draggable Droppable not found. Check your CDN script.');
+    return;
+  }
 
-baskets.forEach(b => {
-  b.addEventListener('dragover', (e) => { e.preventDefault(); b.classList.add('drag-over'); });
-  b.addEventListener('dragleave', () => b.classList.remove('drag-over'));
-  b.addEventListener('drop', (e) => {
-    e.preventDefault();
-    b.classList.remove('drag-over');
+  const droppable = new DroppableCtor(
+    document.querySelectorAll('.ticket-container'), // sources live in these containers
+    {
+      draggable: '.brezel',  // the pretzel image
+      dropzone: '.basket'    // targets
+    }
+  );
 
-    applyBasketSwap(b);
+  // hover styles
+  droppable.on('droppable:over', (e) => {
+    e.dropzone.classList.add('drag-over');
+  });
+  droppable.on('droppable:out', (e) => {
+    e.dropzone.classList.remove('drag-over');
+  });
 
-    const choice = b.dataset.choice;
+  // handle the drop
+  droppable.on('droppable:dropped', (e) => {
+    const basket = e.dropzone;
+    const choice = basket.dataset.choice;
+
+    // swap basket image to the "...breze" version
+    applyBasketSwap(basket);
+
+    // lock/dim the pretzel
+    e.source.style.opacity = '0.35';
+    e.source.style.pointerEvents = 'none';
+
     onChoice(choice);
   });
-
-  // Keyboard "drop"
-  b.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      applyBasketSwap(b);
-      onChoice(b.dataset.choice);
-    }
-  });
-});
+}
 
 // ===== Choice handling (stay on same screen) =====
 function onChoice(choice) {
   state.choice = choice;
   state.submittedAt = new Date().toISOString();
-
   localStorage.setItem('kimmis_bayernparty_rsvp', JSON.stringify(state));
 
   sendEmail(state).catch(() => {/* ignore in UI */});
-
   showDone();
 }
 
 function showDone() {
-  // build your inline done message
+  // your inline done message
   const map1 = { yes: 'juhu', yes_plus_one: 'juhu', no: 'schade' };
   const map2 = {
     yes: '! du kommst.',
@@ -176,39 +194,30 @@ function showDone() {
   };
   const msg = `${map1[state.choice] || ''} ${state.name} ${map2[state.choice] || ''}`.trim();
 
-  // replace the main title text
-  if (sortTitleMain) sortTitleMain.textContent = msg;
+  if (bubbleEl) bubbleEl.textContent = msg;
 
-  // optionally hide instruction line and the pretzel
-  stepSort?.classList.add('is-done');
-  if (sortTitleInstr) sortTitleInstr.style.display = 'none';
-  if (ticket) {
-    ticket.style.opacity = '.35';
-    ticket.setAttribute('draggable', 'false');
-  }
+  stepSort?.classList.add('is-done'); // optional: used by your CSS to tone down notes etc.
 }
 
-// ===== Undo (restores visuals + titles) =====
+// ===== Undo (optional) =====
 undoBtn?.addEventListener('click', () => {
   state.choice = '';
   state.submittedAt = null;
   localStorage.removeItem('kimmis_bayernparty_rsvp');
 
-  // restore basket image if one was swapped
   if (filledBasket) {
     restoreBasketImage(filledBasket);
     filledBasket = null;
   }
 
-  // restore pretzel
-  if (ticket) {
-    ticket.style.opacity = '1';
-    ticket.setAttribute('draggable', 'true');
+  // re-enable pretzel
+  const brezel = document.querySelector('.ticket-container .brezel');
+  if (brezel) {
+    brezel.style.opacity = '1';
+    brezel.style.pointerEvents = '';
   }
 
-  // restore titles and flags
-  if (sortTitleMain)  sortTitleMain.textContent = defaultSortTitle;
-  if (sortTitleInstr) sortTitleInstr.style.display = '';
+  if (bubbleEl) bubbleEl.textContent = defaultBubble;
   stepSort?.classList.remove('is-done');
 });
 
@@ -255,11 +264,6 @@ function applyBasketSwap(targetBasket) {
   if (brezeSrc) {
     img.src = brezeSrc;
     filledBasket = targetBasket;
-  }
-
-  if (ticket) {
-    ticket.style.opacity = '.35';
-    ticket.setAttribute('draggable', 'false');
   }
 }
 

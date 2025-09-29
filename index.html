@@ -44,32 +44,44 @@
       </section>
 
 
-    <section id="step-sort" class="hidden flex-container">
-      <div class="instructions">
-        <div class="img-container">
-          <img  class="avatar" src="img/avatars/thingy.png">
+      <section id="step-sort" class="hidden flex-container">
+        <div class="instructions">
+          <div class="img-container">
+            <img id="chosenAvatar" class="avatar" src="img/avatars/thingy.png" alt="Gewählter Avatar">
+          </div>
+          <p class="bubble">
+            hi <span id="guestNameSpan">marius</span>! zieh die breze in den passenden korb:
+          </p>
         </div>
-        <h2 class="bubble">hi marius! zieh die breze in den passenden korb:</h2>
-      </div>
-      <div id="ticket" class="brezel" draggable="true" aria-grabbed="false">
-      </div>
+      
+        <!-- DRAGGABLE SOURCE -->
+        <div class="ticket-container">
+          <img class="brezel" src="img/brezel.png" alt="Breze" draggable="false">
+        </div>
+      
+        <!-- DROP ZONES -->
         <div class="baskets">
-          <div class="basket basket1" data-choice="yes" tabindex="0" aria-dropeffect="move">
+          <div class="basket basket1" data-choice="yes">
             <img src="img/basket1.png" data-breze-src="img/basket1breze.png" alt="">
             <div class="note"><p>bin dabei!</p></div>
           </div>
-        
-          <div class="basket basket2" data-choice="yes_plus_one" tabindex="0" aria-dropeffect="move">
+      
+          <div class="basket basket2" data-choice="yes_plus_one">
             <img src="img/basket3.png" data-breze-src="img/basket3breze.png" alt="">
             <div class="note"><p>bin dabei und bringe wen mit!</p></div>
           </div>
-        
-          <div class="basket basket3" data-choice="no" tabindex="0" aria-dropeffect="move">
+      
+          <div class="basket basket3" data-choice="no">
             <img src="img/basket2.png" data-breze-src="img/basket2breze.png" alt="">
             <div class="note"><p>kann nicht :(</p></div>
           </div>
         </div>
-    </section>
+      </section>
+      
+  <script src="https://cdn.jsdelivr.net/npm/@shopify/draggable@1.0.0-beta.11/lib/draggable.bundle.js"></script>
   <script src="app.js" defer></script>
 </body>
 </html>
+
+
+
