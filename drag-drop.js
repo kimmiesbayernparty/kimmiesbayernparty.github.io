@@ -20,26 +20,54 @@
     let filledBasket = null; // local visual tracker
     let bubbleEl;
     let submitBtn;
+
+    function typeBubbleText(html, speed = 25) {
+      bubbleEl = bubbleEl || document.querySelector('#step-sort .bubble');
+      if (!bubbleEl) return;
+    
+      bubbleEl.innerHTML = '';
+    
+      let i = 0;
+      let isTag = false;
+      let text = '';
+    
+      function type() {
+        if (i >= html.length) return;
+    
+        const char = html[i];
+        text += char;
+        bubbleEl.innerHTML = text;
+    
+        if (char === '<') isTag = true;
+        if (char === '>') isTag = false;
+    
+        i++;
+    
+        // Skip typing delay for inside of HTML tags
+        const delay = isTag ? 0 : speed;
+        setTimeout(type, delay);
+      }
+    
+      type();
+    }
   
-    // Update bubble + enable submit (no email yet)
     function onChoice(choice) {
       state.choice = choice;
       state.submittedAt = new Date().toISOString();
-  
+    
       const map = {
         yes: 'juhu, du kommst!',
         yes_plus_one: 'juhu, du kommst mit begleitung!',
         no: 'schade, vielleicht nächstes mal <3'
       };
-  
+    
       const msg = (map[choice] || '').trim();
-  
-      // helper text on a new line
-      const helper = `falls du den falschen korb gewählt hast, zieh die breze einfach rüber. ansonsten kannst du deine antwort mit dem button unten abschicken!`;
-  
-      bubbleEl = bubbleEl || $('#step-sort .bubble');
-      if (bubbleEl) bubbleEl.innerHTML = `${msg}<br><small>${helper}</small>`;
-  
+      const helper = `<br><small>falls du den falschen korb gewählt hast, zieh die breze einfach rüber. ansonsten kannst du deine antwort mit dem button unten abschicken!</small>`;
+      const fullText = `${msg}${helper}`;
+    
+      // ⬇️ now types nicely and renders HTML
+      typeBubbleText(fullText, 25);
+    
       if (submitBtn) {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Abschicken';
