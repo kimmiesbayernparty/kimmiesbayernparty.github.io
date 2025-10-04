@@ -6,12 +6,13 @@
       content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <title>kimmis bayernparty – RSVP</title>
   <link rel="stylesheet" href="style.css" />
+
 </head>
 <body>
   <main class="container">
     <header>
-        <img src="img/kimmi3.png">
-      </header>
+      <img src="img/kimmi3.png" alt="">
+    </header>
 
     <section id="step-identity" class="card">
         <h2>Wer bist du?</h2>
@@ -31,7 +32,6 @@
           
               <button type="button" class="avatar-arrow right" aria-label="Nächster Avatar"><img class="arrow" src="img/arrow2.png"></button>
             </div>
-            <!-- hidden input will store current value -->
             <input type="hidden" name="avatar" id="avatarInput" value="girl" />
           </fieldset>
           <div class="flex">
@@ -43,45 +43,67 @@
         </form>
       </section>
 
-
-      <section id="step-sort" class="hidden flex-container">
-        <div class="instructions">
-          <div class="img-container">
-            <img id="chosenAvatar" class="avatar" src="img/avatars/thingy.png" alt="Gewählter Avatar">
-          </div>
-          <p class="bubble">
-            hi <span id="guestNameSpan">marius</span>! zieh die breze in den passenden korb:
-          </p>
+    <section id="step-sort" class="flex-container hidden">
+      <div class="instructions">
+        <div class="img-container">
+          <img id="chosenAvatar" class="avatar" src="img/avatars/thingy.png" alt="Gewählter Avatar">
         </div>
-      
-        <!-- DRAGGABLE SOURCE -->
-        <div class="ticket-container">
+        <p class="bubble">
+          hi <span id="guestNameSpan">marius</span>! zieh die breze in den passenden korb:
+        </p>
+      </div>
+
+      <!-- SOURCE: holds the draggable .item -->
+      <div class="ticket-container">
+        <div class="item">
           <img class="brezel" src="img/brezel.png" alt="Breze" draggable="false">
         </div>
-      
-        <!-- DROP ZONES -->
+      </div>
+
+      <!-- BASKETS: each has an image and a .slot to receive the item -->
+      <div>
         <div class="baskets">
           <div class="basket basket1" data-choice="yes">
-            <img src="img/basket1.png" data-breze-src="img/basket1breze.png" alt="">
+            <img src="img/basket3.png" data-breze-src="img/basket1breze.png" alt="">
+            <div class="slot"></div>
             <div class="note"><p>bin dabei!</p></div>
           </div>
-      
+  
           <div class="basket basket2" data-choice="yes_plus_one">
-            <img src="img/basket3.png" data-breze-src="img/basket3breze.png" alt="">
+            <img src="img/basket1.png" data-breze-src="img/basket3breze.png" alt="">
+            <div class="slot"></div>
             <div class="note"><p>bin dabei und bringe wen mit!</p></div>
           </div>
-      
+  
           <div class="basket basket3" data-choice="no">
             <img src="img/basket2.png" data-breze-src="img/basket2breze.png" alt="">
+            <div class="slot"></div>
             <div class="note"><p>kann nicht :(</p></div>
           </div>
         </div>
-      </section>
+        <div class="submit-container">
+          <button id="submitChoiceBtn" class="btn" type="button" disabled>
+            Abschicken
+          </button>
+        </div>
+      </div>
       
+    </section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+  <script>
+    window.EMAILJS = {
+      SERVICE_ID:  'service_jkmskad',
+      TEMPLATE_ID: 'template_juq56y9',
+      PUBLIC_KEY:  'FD23SeCS4zAVskE8d'
+    };
+    emailjs.init({ publicKey: window.EMAILJS.PUBLIC_KEY });
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/@shopify/draggable@1.0.0-beta.11/lib/draggable.bundle.js"></script>
-  <script src="app.js" defer></script>
+  <script src="app-core.js"></script>
+  <script src="drag-drop.js"></script>
 </body>
 </html>
-
 
 
