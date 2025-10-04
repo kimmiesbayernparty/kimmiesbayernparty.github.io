@@ -143,19 +143,13 @@ button {
 ____________________________________*/
   
 
-  
-
-
-
-
- 
 
 
 .flex-container {
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 80vh;
+  height: 70vh;
   justify-content: space-between;
   align-items: center;
 }
@@ -182,7 +176,7 @@ ____________________________________*/
   background-color: #fff;
   padding: 1.3rem;
   text-align: center;
-  border-radius: 5rem;
+  border-radius: 5px;
   box-shadow: rgba(0, 0, 0, 0.25) 1px 0.0625em 0.0625em, rgba(0, 0, 0, 0.105) 4px 0.125em 0.5em, #3100b70c 0 0 25px 0;
   position: relative;
   }
