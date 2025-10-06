@@ -313,4 +313,11 @@ p {
     margin-top: 5px;
   }
   
+  /* keep your existing .hidden for other places */
+.hidden { display: none !important; }
+.draggable-mirror { z-index: 9999; }
+
+.visible {
+  display: block;
+}
  

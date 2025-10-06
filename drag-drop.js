@@ -1,176 +1,177 @@
-/* =========================================================
-   kimmis bayernparty — drag-drop.js
-   ---------------------------------------------------------
-   Responsibilities:
-   - Prevent native img drag on the Breze
-   - Init Shopify Draggable Sortable between source & basket slots
-   - Update bubble text (with helper line)
-   - Enable bottom "Antwort senden" button and send via EmailJS
-   ========================================================= */
-
-   (function () {
-    const {
-      $, state,
-      applyBasketSwap,
-      restoreBasketImage,
-      defaultBubbleText,
-      sendEmail,
-    } = window.RSVP || {};
+(function () {
+    const api = window.RSVP || {};
+    const { $, state, applyBasketSwap, restoreBasketImage, defaultBubbleText, sendEmail } = api;
   
-    let filledBasket = null; // local visual tracker
+    let filledBasket = null;
     let bubbleEl;
     let submitBtn;
-
+  
+    // ---------- safe breze lookup + hide/show ----------
+    function getBrezeImg(itemEl) {
+      console.log("Brezel found!");
+      return document.querySelector('img.brezel');
+    }
+    function hideBreze(itemEl) {
+      var img = getBrezeImg(itemEl);
+      console.log("Brezel hidden!");
+      img.style.visibility = 'hidden';
+    }
+    function showBreze(itemEl) {
+      var img = getBrezeImg(itemEl);
+      console.log("Brezel is back!");
+      img.style.visibility = 'visible';
+    }
+  
+    // ---------- typing effect that respects HTML tags ----------
     function typeBubbleText(html, speed = 25) {
       bubbleEl = bubbleEl || document.querySelector('#step-sort .bubble');
       if (!bubbleEl) return;
-    
       bubbleEl.innerHTML = '';
-    
+  
       let i = 0;
       let isTag = false;
-      let text = '';
-    
-      function type() {
+      let soFar = '';
+  
+      function tick() {
         if (i >= html.length) return;
-    
-        const char = html[i];
-        text += char;
-        bubbleEl.innerHTML = text;
-    
-        if (char === '<') isTag = true;
-        if (char === '>') isTag = false;
-    
-        i++;
-    
-        // Skip typing delay for inside of HTML tags
-        const delay = isTag ? 0 : speed;
-        setTimeout(type, delay);
+        const ch = html[i++];
+        soFar += ch;
+        bubbleEl.innerHTML = soFar;
+  
+        if (ch === '<') isTag = true;
+        if (ch === '>') isTag = false;
+  
+        setTimeout(tick, isTag ? 0 : speed);
       }
-    
-      type();
+      tick();
     }
   
+    // ---------- bubble + bottom button ----------
     function onChoice(choice) {
       state.choice = choice;
       state.submittedAt = new Date().toISOString();
-    
+  
       const map = {
         yes: 'juhu, du kommst!',
         yes_plus_one: 'juhu, du kommst mit begleitung!',
         no: 'schade, vielleicht nächstes mal <3'
       };
-    
       const msg = (map[choice] || '').trim();
-      const helper = `<br><small>falls du den falschen korb gewählt hast, zieh die breze einfach rüber. ansonsten kannst du deine antwort mit dem button unten abschicken!</small>`;
-      const fullText = `${msg}${helper}`;
-    
-      // ⬇️ now types nicely and renders HTML
-      typeBubbleText(fullText, 25);
-    
+      const helper = `<br><small>Falls du den falschen Korb gewählt hast, zieh die Breze einfach rüber. Andernfalls kannst du deine Antwort mit dem Button unten abschicken!</small>`;
+      const html = `${msg}${helper}`;
+  
+      typeBubbleText(html, 25);
+  
       if (submitBtn) {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Abschicken';
+        submitBtn.classList.remove('sent', 'sending');
       }
     }
   
-    // Send the email when user clicks bottom button
     async function onSubmitChoice() {
-      if (!state.choice) return;
+      if (!state.choice || !submitBtn) return;
   
-      // ensure we send up-to-date identity
+      // ensure identity is current
       state.name   = ($('#guestNameSpan')?.textContent || state.name || 'Gast').trim();
       state.avatar = $('#avatarInput')?.value || state.avatar || '';
       state.submittedAt = new Date().toISOString();
   
       submitBtn.disabled = true;
       submitBtn.textContent = 'Senden…';
+      submitBtn.classList.add('sending');
   
       try {
         await sendEmail(state);
         submitBtn.textContent = 'Gesendet ✓';
-        document.querySelector('.item')?.classList.add('locked');
+        submitBtn.classList.remove('sending');
+        submitBtn.classList.add('sent');
+        // optional: lock dragging after send
+        // document.querySelector('.item')?.classList.add('locked');
       } catch (err) {
         console.error('sendEmail error:', err);
         submitBtn.textContent = 'Fehler – nochmal?';
         submitBtn.disabled = false;
+        submitBtn.classList.remove('sending', 'sent');
       }
     }
   
     document.addEventListener('DOMContentLoaded', () => {
       bubbleEl = $('#step-sort .bubble');
       submitBtn = $('#submitChoiceBtn');
-      if (submitBtn) submitBtn.addEventListener('click', onSubmitChoice);
+      submitBtn?.addEventListener('click', onSubmitChoice);
   
-      // Prevent native image drag on the Breze (browser drag, not Shopify)
-      const brezel = document.querySelector('.item img.brezel');
-      if (brezel) brezel.setAttribute('draggable', 'false');
+      // prevent native image drag
+      const brezeInit = getBrezeImg(document.querySelector('.item'));
+      brezeInit?.setAttribute('draggable', 'false');
   
-      // containers: source `.ticket-container` and each `.basket .slot`
+      // Draggable wiring
       const containers = document.querySelectorAll('.ticket-container, .basket .slot');
-      if (!containers.length || !window.Draggable || !Draggable.Sortable) {
-        console.warn('[Drag] Missing containers or Draggable.Sortable not loaded.');
+      if (!containers.length) {
+        console.warn('[Drag] No containers found');
+        return;
+      }
+      if (!(window.Draggable && Draggable.Sortable)) {
+        console.warn('[Drag] Draggable.Sortable not available — check the script tag (use UMD beta.12).');
         return;
       }
   
       const sortable = new Draggable.Sortable(containers, {
         draggable: '.item',
         mirror: { constrainDimensions: true },
-        plugins: [Draggable.Plugins.SwapAnimation] // optional animation
+        plugins: [Draggable.Plugins.SwapAnimation]
       });
   
-      // Leaving a basket: restore its art & show Breze again
+      // start dragging
       sortable.on('sortable:start', ({ oldContainer, dragEvent }) => {
-        const fromBasket = oldContainer?.closest('.basket');
-        const item = dragEvent.source;
+        const item = dragEvent?.source;
+        if (!item) return;
   
         item.classList.remove('in-basket');
+        showBreze(item);
   
-        const brezeImg = item.querySelector('.brezel');
-        if (brezeImg) brezeImg.classList.remove('hidden');
-  
+        const fromBasket = oldContainer?.closest?.('.basket');
         if (fromBasket) {
           restoreBasketImage(fromBasket);
           if (filledBasket === fromBasket) filledBasket = null;
         }
       });
   
-      // Dropped somewhere
+      // stop dragging
       sortable.on('sortable:stop', ({ newContainer, oldContainer, dragEvent }) => {
-        const item = dragEvent.source;
-        const toBasket = newContainer?.closest('.basket');
+        const item = dragEvent?.source;
+        if (!item) return;
+  
+        const toBasket = newContainer?.closest?.('.basket');
         const fromBasket = oldContainer?.closest?.('.basket');
   
         if (toBasket) {
           applyBasketSwap(toBasket);
           if (fromBasket && fromBasket !== toBasket) restoreBasketImage(fromBasket);
   
-          // Hide the moving Breze to make it feel like it “stayed” in the basket art
-          const brezeImg = item.querySelector('.brezel');
-          if (brezeImg) brezeImg.classList.add('hidden');
-  
+          hideBreze(item); // <- robust hide (no null style)
           item.classList.add('in-basket');
           filledBasket = toBasket;
   
-          onChoice(toBasket.dataset.choice); // enables bottom submit button
+          onChoice(toBasket.dataset.choice);
         } else {
           // back to source
           item.classList.remove('in-basket');
-          const brezeImg = item.querySelector('.brezel');
-          if (brezeImg) brezeImg.classList.remove('hidden');
+          showBreze(item);
   
           if (filledBasket) {
             restoreBasketImage(filledBasket);
             filledBasket = null;
           }
   
-          // disable submit and restore bubble text
           if (submitBtn) {
             submitBtn.disabled = true;
             submitBtn.textContent = 'Antwort senden';
+            submitBtn.classList.remove('sending', 'sent');
           }
           if (bubbleEl) bubbleEl.textContent = defaultBubbleText;
         }
       });
     });
+
   })();

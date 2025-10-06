@@ -1,16 +1,3 @@
-/* =========================================================
-   kimmis bayernparty — app-core.js
-   ---------------------------------------------------------
-   Responsibilities:
-   - Global helpers ($, $$)
-   - Initial visibility (step 1 vs step 2)
-   - Global state (window.RSVP.state)
-   - Avatar carousel + identity form
-   - Hydrate step 2 (name + avatar)
-   - Email sending (EmailJS)
-   - Basket image swap helpers
-   - Expose API on window.RSVP for drag-drop.js
-   ========================================================= */
 
    (function () {
     // ---------- Utilities ----------
@@ -40,26 +27,27 @@
     const state = {
       name: '',
       avatar: '',
-      choice: '',            // "yes" | "yes_plus_one" | "no"
+      choice: '',            
       submittedAt: null
     };
   
-    // Track which basket currently shows the “with breze” image
+   
     let filledBasket = null;
   
     // ---------- Config (toggle dev mode) ----------
-    const DEV_SKIP_REGISTRATION = false;  // true = start directly in step 2
+    const DEV_SKIP_REGISTRATION = true;  // true = start directly in step 2
     const DEV_DEFAULT_NAME   = 'Gast';
     const DEV_DEFAULT_AVATAR = 'thingy';
   
-    // ---------- Avatar carousel (step 1) ----------
+
     const avatars = [
       { value: "bunny",  label: "bunny",  src: "img/avatars/bunny.png"  },
       { value: "frog",   label: "frog",   src: "img/avatars/frog.png"   },
       { value: "devil",  label: "devil",  src: "img/avatars/devil.png"  },
       { value: "monk",   label: "monk",   src: "img/avatars/monk.png"   },
       { value: "thingy", label: "thingy", src: "img/avatars/thingy.png" },
-      { value: "cat",    label: "cat",    src: "img/avatars/cat2.png"   },
+      { value: "cat2",    label: "cat2",    src: "img/avatars/cat2.png"   },
+      { value: "cat",    label: "cat",    src: "img/avatars/cat.png"   },
     ];
     let avatarIndex = 0;
   
@@ -74,13 +62,11 @@
       if (avatarInput) avatarInput.value = current.value;
       state.avatar = current.value;
   
-      // live reflect if step 2 is visible
       if (!stepSort?.classList.contains('hidden')) hydrateSortStep();
     }
   
-    // ---------- Initial visibility ----------
+    
     function setInitialVisibility() {
-      // Ensure CSS has: .hidden { display:none !important; }
       if (DEV_SKIP_REGISTRATION) {
         stepIdentity?.classList.add('hidden');
         stepSort?.classList.remove('hidden');
@@ -90,7 +76,6 @@
       }
     }
   
-    // ---------- Hydrate step 2 with chosen data ----------
     function hydrateSortStep() {
       if (nameSpan) nameSpan.textContent = state.name || 'Gast';
   
@@ -102,7 +87,6 @@
       }
     }
   
-    // ---------- Email (EmailJS SDK required) ----------
     async function sendEmail(payload) {
       if (!window.EMAILJS || !window.emailjs) {
         throw new Error('EmailJS SDK or config not found');
@@ -113,14 +97,12 @@
         name:        payload.name,
         avatar:      payload.avatar,
         choice:      payload.choice,
-        submittedAt: payload.submittedAt,
         title:       'kimmis bayernparty'
       };
   
       return window.emailjs.send(SERVICE_ID, TEMPLATE_ID, params);
     }
   
-    // ---------- Basket image swap helpers ----------
     function applyBasketSwap(targetBasket) {
       if (filledBasket && filledBasket !== targetBasket) {
         restoreBasketImage(filledBasket);
