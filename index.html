@@ -15,21 +15,19 @@
     </header>
 
     <section id="step-identity" class="card">
+      <div class="wrappy">
         <h2>Wer bist du?</h2>
         <form id="identityForm" autocomplete="off" novalidate>
           <div class="form-control">
             <input id="guestName" name="guestName" class="input input-alt" placeholder="Dein Name" required="" type="text">
             <span class="input-border input-border-alt"></span>
           </div>
+      </div>
           <fieldset class="avatar-fieldset">
             <h2>Wähle deinen Avatar</h2>
             <div class="avatar-carousel">
               <button type="button" class="avatar-arrow left" aria-label="Vorheriger Avatar"><img class="arrow" src="img/arrow.png"></button>
-          
-              <div class="avatar-display">
-                <img id="avatarImage" src="img/avatars/cat.png" alt="Avatar Vorschau" />
-              </div>
-          
+                <img id="avatarImage" src="img/avatars/cat2.png" alt="Avatar Vorschau" />
               <button type="button" class="avatar-arrow right" aria-label="Nächster Avatar"><img class="arrow" src="img/arrow2.png"></button>
             </div>
             <input type="hidden" name="avatar" id="avatarInput" value="girl" />
@@ -60,8 +58,7 @@
         </div>
       </div>
 
-      <!-- BASKETS: each has an image and a .slot to receive the item -->
-      <div>
+    
         <div class="baskets">
           <div class="basket basket1" data-choice="yes">
             <img src="img/basket3.png" data-breze-src="img/basket1breze.png" alt="">
@@ -82,11 +79,10 @@
           </div>
         </div>
         <div class="submit-container">
-          <button id="submitChoiceBtn" class="btn" type="button" disabled>
+          <button  id="submitChoiceBtn" class="btn" type="button" disabled>
             Abschicken
           </button>
         </div>
-      </div>
       
     </section>
   </main>

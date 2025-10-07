@@ -22,7 +22,7 @@
       img.style.visibility = 'visible';
     }
   
-    // ---------- typing effect that respects HTML tags ----------
+
     function typeBubbleText(html, speed = 25) {
       bubbleEl = bubbleEl || document.querySelector('#step-sort .bubble');
       if (!bubbleEl) return;

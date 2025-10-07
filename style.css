@@ -24,14 +24,31 @@ h2 {
   font-size: 1.2rem;
 }
 
+header {
+  height: 12dvh;
+  display: flex;
+  align-items: center;
+}
+
 header img {
-  margin: 1rem 1rem 0 1rem;
-  height: 10vh;
+  margin-left: 1dvh;
+  height: 10dvh;
 }
 
 
 .card {
-  padding: 1rem;
+  padding: 2dvh;
+  height: 88dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  gap: 2dvh;
+}
+
+.wrappy {
+  width: 100%;
 }
 
 .label { display: block; margin-bottom: .25rem; font-weight: 600; }
@@ -52,30 +69,37 @@ header img {
 }
 
 .avatar-fieldset {
-  margin: 1rem 0;
+  width: 100%;
   border: 0;
   padding: 0;
+  text-align: left;
 }
 
 .avatar-carousel {
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  aspect-ratio: 1 / 1;
+  justify-content: center;
+  margin-top: 1rem;
+  gap: 1vw;
 }
 
-.avatar-display {
-  text-align: center;
-}
-.avatar-display img {
-  width: 50vw;
-  max-height: 90vw;
+.avatar-arrow {
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 12vw;
 }
 
 .arrow {
-  width: 10vw;
+  width: 100%;
+  height: auto;
+}
+
+#avatarImage {
+  width: 65vw;
+  height: auto;
+  object-fit: contain;
 }
 
 .btn {
@@ -100,6 +124,8 @@ header img {
   filter:brightness(110%) contrast(110%);
   font-family: NB;
   color: #fff;
+  height: 2rem;
+ 
 }
 .btn::before,
 .btn::after{
@@ -129,13 +155,12 @@ header img {
   display: flex;
   width: 100%;
   justify-content: flex-end;
+  align-items: flex-end;
+  height: 100%;
+
 }
 
-button {
-  background-color: transparent;
-  outline: none;
-  border: none;
-}
+
 
 
 
@@ -149,27 +174,30 @@ ____________________________________*/
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 70vh;
+  height: 88dvh;
   justify-content: space-between;
   align-items: center;
+  padding: 2dvh;
 }
 
 .instructions {
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
-  margin-inline: 2vw;
-  gap: 1.5rem;
-  height: 25vh;
-  padding: 1rem;
-  border-radius: 1rem;
+  gap: 1.7rem;
+  height: 23dvh;
+  padding-inline: 1rem;
   width: 100%;
 }
 
 .img-container {
-  max-width: 15vh;
+  height: 12dvh;
   align-self: flex-end;
 } 
+
+.avatar {
+  height: 12dvh;
+}
 
 .bubble {
   line-height: 1.3rem;
@@ -179,6 +207,7 @@ ____________________________________*/
   border-radius: 5px;
   box-shadow: rgba(0, 0, 0, 0.25) 1px 0.0625em 0.0625em, rgba(0, 0, 0, 0.105) 4px 0.125em 0.5em, #3100b70c 0 0 25px 0;
   position: relative;
+  width: 100%;
   }
   
   .bubble:after {
@@ -196,27 +225,12 @@ ____________________________________*/
     margin-left: -17px;
   }
 
-  
-
-
-
-.avatar {
-  width: 30vw;
-  align-self: flex-end;
-}
-
-button {
-  background-color: transparent;
-  outline: none;
-  border: none;
-}
-
-.brezel {
-  width: 25vw;
-  z-index: 10;
-  animation: pulse 2s infinite ease-in-out;
-  
-} 
+  .brezel {
+    height: 10dvh;
+    z-index: 10;
+    animation: pulse 2s infinite ease-in-out;
+    
+  } 
 
 @keyframes pulse {
     0% {
@@ -275,13 +289,12 @@ p {
     justify-content: flex-end;
     align-items: flex-end;
     gap: 5vw;
-    padding: 2vh 4vw;
-    width: calc(100vw - 2vh);
-    padding-bottom: 3rem;
-    margin-inline: 1vh;
+    padding: 0dvh 2dvh 6dvh 2dvh;
+    width: 100%;
+   
     border: solid 1px var(--ink);
     border-radius: 100%;
-    height: 25vh;
+    
   }
   
   .basket {
