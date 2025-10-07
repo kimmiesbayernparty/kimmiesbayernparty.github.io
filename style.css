@@ -12,7 +12,7 @@
 }
 
 * { box-sizing: border-box; font-family: nb;}
-html, body { margin: 0; padding: 0; }
+html, body { margin: 0; padding: 0; overscroll-behavior-y: contain;}
 body {
   background: var(--bg);
   color: var(--ink);
@@ -160,14 +160,8 @@ header img {
 
 }
 
-
-
-
-
 /* page 2 starts here 
 ____________________________________*/
-  
-
 
 
 .flex-container {
@@ -334,3 +328,6 @@ p {
   display: block;
 }
  
+* {
+  touch-action: none;   
+}
