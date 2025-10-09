@@ -57,7 +57,7 @@
         no: 'schade, vielleicht nächstes mal <3'
       };
       const msg = (map[choice] || '').trim();
-      const helper = `<br><small>Falls du den falschen Korb gewählt hast, zieh die Breze einfach rüber. Andernfalls kannst du deine Antwort mit dem Button unten abschicken!</small>`;
+      const helper = `<br><small>falls du den falschen korb gewählt hast, zieh die breze einfach rüber. andernfalls kannst du deine antwort mit dem button unten abschicken!</small>`;
       const html = `${msg}${helper}`;
   
       typeBubbleText(html, 25);

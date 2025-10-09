@@ -35,7 +35,7 @@
     let filledBasket = null;
   
     // ---------- Config (toggle dev mode) ----------
-    const DEV_SKIP_REGISTRATION = false;  // true = start directly in step 2
+    const DEV_SKIP_REGISTRATION = true;  // true = start directly in step 2
     const DEV_DEFAULT_NAME   = 'Gast';
     const DEV_DEFAULT_AVATAR = 'thingy';
   
@@ -46,7 +46,7 @@
       { value: "devil",  label: "devil",  src: "img/avatars/devil.png"  },
       { value: "monk",   label: "monk",   src: "img/avatars/monk.png"   },
       { value: "thingy", label: "thingy", src: "img/avatars/thingy.png" },
-      { value: "cat",    label: "cat",    src: "img/avatars/cat2.png"   },
+      { value: "cat",    label: "cat",    src: "img/avatars/cat.png"   },
     ];
     let avatarIndex = 0;
   
@@ -138,7 +138,7 @@
         const avatar = (new FormData(identityForm)).get('avatar');
   
         if (!name || !avatar) {
-          alert('Bitte gib deinen Namen ein und wähle einen Avatar.');
+          alert('Bitte gib deinen Namen ein.');
           return;
         }
   
