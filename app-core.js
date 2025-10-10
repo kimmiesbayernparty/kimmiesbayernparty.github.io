@@ -35,18 +35,37 @@
     let filledBasket = null;
   
     // ---------- Config (toggle dev mode) ----------
-    const DEV_SKIP_REGISTRATION = true;  // true = start directly in step 2
+    const DEV_SKIP_REGISTRATION = false;  // true = start directly in step 2
     const DEV_DEFAULT_NAME   = 'Gast';
     const DEV_DEFAULT_AVATAR = 'thingy';
   
 
     const avatars = [
-      { value: "bunny",  label: "bunny",  src: "img/avatars/bunny.png"  },
-      { value: "frog",   label: "frog",   src: "img/avatars/frog.png"   },
-      { value: "devil",  label: "devil",  src: "img/avatars/devil.png"  },
-      { value: "monk",   label: "monk",   src: "img/avatars/monk.png"   },
-      { value: "thingy", label: "thingy", src: "img/avatars/thingy.png" },
-      { value: "cat",    label: "cat",    src: "img/avatars/cat.png"   },
+      { value: "bunny",      label: "bunny",      src: "img/avatars/bunny.png" },
+      { value: "snail",      label: "snail",      src: "img/avatars/snail.png" },
+      { value: "thingy",     label: "thingy",     src: "img/avatars/thingy.png" },
+      { value: "devil",      label: "devil",      src: "img/avatars/devil.png" },
+      { value: "frog",       label: "frog",       src: "img/avatars/frog.png" },
+      { value: "lion",       label: "lion",       src: "img/avatars/lion.png" },
+      { value: "monk",       label: "monk",       src: "img/avatars/monk.png" },
+      { value: "plant",      label: "plant",      src: "img/avatars/plant.png" },
+      { value: "prince",     label: "prince",     src: "img/avatars/prince.png" },
+      { value: "drink",      label: "drink",      src: "img/avatars/drink.png" },
+      { value: "puke",       label: "puke",       src: "img/avatars/puke.png" },
+      { value: "rabbit",     label: "rabbit",     src: "img/avatars/rabbit.png" },
+      { value: "trumpet",    label: "trumpet",    src: "img/avatars/trumpet.png" },
+      { value: "wursti",     label: "wursti",     src: "img/avatars/wursti.png" },
+      // { value: "geese",      label: "geese",      src: "img/avatars/geese.png" },
+      // { value: "girl",       label: "girl",       src: "img/avatars/girl.png" },
+      // { value: "kids",       label: "kids",       src: "img/avatars/kids.png" },
+      // { value: "knit",       label: "knit",       src: "img/avatars/knit.png" },
+      { value: "dachshund",  label: "dachshund",  src: "img/avatars/dachshund.png" },
+      { value: "kindl",      label: "kindl",      src: "img/avatars/kindl.png" },
+      { value: "fairy",      label: "fairy",      src: "img/avatars/fairy.png" },
+      { value: "cheburashka", label: "cheburashka", src: "img/avatars/cheburashka.png" },
+      { value: "mischa", label: "mischa", src: "img/avatars/mischa.png" },
+      { value: "clippy",     label: "clippy",     src: "img/avatars/clippy.png" },
+      { value: "cat",        label: "cat",        src: "img/avatars/cat.png" },
     ];
     let avatarIndex = 0;
   
