@@ -130,6 +130,7 @@ header img {
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
 .btn::before,
@@ -270,6 +271,7 @@ ____________________________________*/
 
     50% {
         transform: scale(1);
+        filter: brightness(110%);
     }
 
     100% {
@@ -314,11 +316,7 @@ p {
     width: auto;
   }
 
-  .btn:disabled {
-    color: #ffffff74;           
-    cursor: default;  
-    opacity: 0.7; 
-  }
+  
 
   #step-sort .bubble small {
     font-size: .9rem;     
@@ -563,11 +561,7 @@ p {
 
   }
 
-  .btn:disabled {
-    color: #ffffff74;           
-    cursor: default;  
-    opacity: 0.7; 
-  }
+ 
 
   #step-sort .bubble small {
     font-size: .9rem;     
