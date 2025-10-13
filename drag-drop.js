@@ -23,33 +23,59 @@
     }
   
 
-    function typeBubbleText(html, speed = 25) {
-      bubbleEl = bubbleEl || document.querySelector('#step-sort .bubble');
-      if (!bubbleEl) return;
+    document.addEventListener('click', () => {
+      const preload = new Audio('sounds/avatar.wav');
+      preload.play().then(() => {
+        preload.pause();
+        preload.currentTime = 0;
+      }).catch(() => {});
+    }, { once: true });
+
     
-      bubbleEl.style.backgroundColor = '#fff';
-      bubbleEl.style.transition = 'none'; // disable fade glitches
-      bubbleEl.style.willChange = 'contents, background-color';
-    
-      bubbleEl.innerHTML = '&nbsp;';
-  
-      let i = 0;
-      let isTag = false;
-      let soFar = '';
-  
-      function tick() {
-        if (i >= html.length) return;
-        const ch = html[i++];
-        soFar += ch;
-        bubbleEl.innerHTML = soFar;
-  
-        if (ch === '<') isTag = true;
-        if (ch === '>') isTag = false;
-  
-        setTimeout(tick, isTag ? 0 : speed);
-      }
-      tick();
+
+    // Load sound once
+const typingSound = new Audio('sounds/avatar.mp3');
+typingSound.loop = true; // keeps playing during typing
+
+function typeBubbleText(html, speed = 25) {
+  bubbleEl = bubbleEl || document.querySelector('#step-sort .bubble');
+  if (!bubbleEl) return;
+  bubbleEl.style.backgroundColor = '#fff';
+  bubbleEl.style.transition = 'none'; // disable fade glitches
+  bubbleEl.style.willChange = 'contents, background-color';
+
+  let i = 0;
+  let isTag = false;
+  let soFar = '';
+  let isSoundPlaying = false;
+
+  // ✅ Start sound when typing begins
+  if (!isSoundPlaying) {
+    typingSound.currentTime = 0; // restart
+    typingSound.play().catch(() => {}); // ignore autoplay block
+    isSoundPlaying = true;
+  }
+
+  function tick() {
+    if (i >= html.length) {
+      // ✅ Stop sound when finished typing
+      typingSound.pause();
+      typingSound.currentTime = 0;
+      isSoundPlaying = false;
+      return;
     }
+    const ch = html[i++];
+    soFar += ch;
+    bubbleEl.innerHTML = soFar;
+
+    if (ch === '<') isTag = true;
+    if (ch === '>') isTag = false;
+
+    setTimeout(tick, isTag ? 0 : speed);
+  }
+
+  tick();
+}
 
     let helperShown = false;
   
