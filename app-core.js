@@ -35,7 +35,7 @@
     let filledBasket = null;
   
     // ---------- Config (toggle dev mode) ----------
-    const DEV_SKIP_REGISTRATION = true;  // true = start directly in step 2
+    const DEV_SKIP_REGISTRATION = false;  // true = start directly in step 2
     const DEV_DEFAULT_NAME   = 'du';
     const DEV_DEFAULT_AVATAR = 'cat';
   
