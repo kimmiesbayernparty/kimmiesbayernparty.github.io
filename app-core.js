@@ -36,7 +36,7 @@
   
     // ---------- Config (toggle dev mode) ----------
     const DEV_SKIP_REGISTRATION = false;  // true = start directly in step 2
-    const DEV_DEFAULT_NAME   = 'Gast';
+    const DEV_DEFAULT_NAME   = 'du';
     const DEV_DEFAULT_AVATAR = 'thingy';
   
 
@@ -54,11 +54,10 @@
       { value: "puke",       label: "puke",       src: "img/avatars/puke.png" },
       { value: "rabbit",     label: "rabbit",     src: "img/avatars/rabbit.png" },
       { value: "trumpet",    label: "trumpet",    src: "img/avatars/trumpet.png" },
+      { value: "kp",    label: "kp",    src: "img/avatars/kp.png" },
+      { value: "bat",    label: "bat",    src: "img/avatars/bat.png" },
+      { value: "dicky",    label: "dicky",    src: "img/avatars/dicky.png" },
       { value: "wursti",     label: "wursti",     src: "img/avatars/wursti.png" },
-      // { value: "geese",      label: "geese",      src: "img/avatars/geese.png" },
-      // { value: "girl",       label: "girl",       src: "img/avatars/girl.png" },
-      // { value: "kids",       label: "kids",       src: "img/avatars/kids.png" },
-      // { value: "knit",       label: "knit",       src: "img/avatars/knit.png" },
       { value: "dachshund",  label: "dachshund",  src: "img/avatars/dachshund.png" },
       { value: "kindl",      label: "kindl",      src: "img/avatars/kindl.png" },
       { value: "fairy",      label: "fairy",      src: "img/avatars/fairy.png" },
@@ -105,21 +104,33 @@
       }
     }
   
-    async function sendEmail(payload) {
-      if (!window.EMAILJS || !window.emailjs) {
-        throw new Error('EmailJS SDK or config not found');
-      }
-      const { SERVICE_ID, TEMPLATE_ID } = window.EMAILJS;
-  
-      const params = {
-        name:        payload.name,
-        avatar:      payload.avatar,
-        choice:      payload.choice,
-        title:       'kimmis bayernparty'
-      };
-  
-      return window.emailjs.send(SERVICE_ID, TEMPLATE_ID, params);
-    }
+    // ---------- Email (EmailJS SDK required) ----------
+async function sendEmail(payload) {
+  if (!(window.emailjs && window.EMAILJS)) {
+    throw new Error('EmailJS SDK or config not found');
+  }
+
+  const { SERVICE_ID, TEMPLATE_ID } = window.EMAILJS;
+
+  // If you want a human-readable label, map it here:
+  const choiceLabel = {
+    yes: 'Ja',
+    yes_plus_one: 'Ja, mit Begleitung',
+    no: 'Nein',
+  }[payload.choice] || payload.choice || '';
+
+  // ⚠️ keys MUST match your EmailJS template ({{name}}, {{avatar}}, {{choice}})
+  const params = {
+    name:   payload.name,          // -> {{name}}
+    avatar: payload.avatar,        // -> {{avatar}}
+    choice: choiceLabel,           // -> {{choice}}
+  };
+
+  // Helpful log while debugging:
+  console.log('[EmailJS] sending', { SERVICE_ID, TEMPLATE_ID, params });
+
+  return emailjs.send(SERVICE_ID, TEMPLATE_ID, params);
+}
   
     function applyBasketSwap(targetBasket) {
       if (filledBasket && filledBasket !== targetBasket) {
@@ -161,7 +172,7 @@
           return;
         }
   
-        state.name   = name;
+        state.name = name.toLowerCase();
         state.avatar = avatar;
   
         hydrateSortStep();
@@ -204,3 +215,41 @@
       defaultBubbleText,
     };
   })();
+
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const backBtn = document.getElementById('backBtn');
+    if (!backBtn) return;
+  
+    backBtn.addEventListener('click', () => {
+      // Show identity step again
+      const stepIdentity = document.getElementById('step-identity');
+      const stepSort = document.getElementById('step-sort');
+  
+      stepIdentity?.classList.remove('hidden');
+      stepSort?.classList.add('hidden');
+  
+      // Reset bubble text to default
+      if (window.RSVP?.defaultBubbleText && document.querySelector('#step-sort .bubble')) {
+        document.querySelector('#step-sort .bubble').textContent = window.RSVP.defaultBubbleText;
+      }
+  
+      // Optional: Reset basket visuals (put breze back if it was placed)
+      const { restoreBasketImage } = window.RSVP;
+      if (restoreBasketImage && window.dragState?.filledBasket) {
+        restoreBasketImage(window.dragState.filledBasket);
+        window.dragState.filledBasket = null;
+      }
+  
+      // Optional: Hide breze ghost and make it draggable again
+      const brezel = document.querySelector('.item img.brezel');
+      if (brezel) brezel.style.visibility = 'visible';
+  
+      // Disable submit again
+      const submitBtn = document.getElementById('submitChoiceBtn');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Abschicken';
+      }
+    });
+  });

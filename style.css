@@ -1,7 +1,6 @@
 :root {
   --bg: #f6f6fa;
   --ink: #1b1b1f;
-  --bubble: hsl(0, 0%, 100%);
 }
 
 .hidden { display: none !important; }
@@ -124,15 +123,15 @@ header img {
   rgba(0, 0, 0, 0.073) 8px 4px 10px;
   transition: 300ms ease-out;
   overflow: hidden;
-  filter:brightness(110%) contrast(110%);
+  filter: brightness(110%) contrast(110%);
   font-family: NB;
   color: #fff;
   height: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
-
 }
+
 .btn::before,
 .btn::after{
   content:"";
@@ -183,6 +182,12 @@ ____________________________________*/
   padding: 2dvh 1.8dvh;
 }
 
+.lower-container {
+  justify-self: flex-end;
+  width: 100%;
+}
+
+
 .instructions {
   display: flex;
   align-items: flex-start;
@@ -204,7 +209,9 @@ ____________________________________*/
 
 .bubble {
   line-height: 1.3rem;
-  background-color: #fff;
+  background-color: #fff !important; 
+  will-change: contents, background-color; 
+  transition: none !important; 
   padding: 1.3rem;
   text-align: center;
   border-radius: 5px;
@@ -228,12 +235,33 @@ ____________________________________*/
     margin-left: -17px;
   }
 
-  .brezel {
-    height: 10dvh;
-    z-index: 10;
-    animation: pulse 2s infinite ease-in-out;
-    width: auto;
-  } 
+  /* Source pretzel (the one you drag) */
+.brezel {
+  display: block;
+  width: clamp(90px, 24vw, 160px);  /* drive size by width */
+  height: auto;                     /* keep aspect ratio */
+  z-index: 10;
+  animation: pulse 2s infinite ease-in-out;
+  object-fit: contain;
+}
+
+/* Optional: cap by viewport height without forcing a fixed height */
+@supports (height: 1dvh) {
+  .brezel { max-height: 20dvh; }    /* soft cap; still keeps ratio */
+}
+
+/* Floating clone during drag */
+.draggable-mirror {
+  position: fixed !important;       
+  pointer-events: none;
+  z-index: 9999;
+}
+.draggable-mirror img {
+  display: block;
+  width: 100%;
+  height: auto;                      
+  object-fit: contain;
+}
 
 @keyframes pulse {
     0% {

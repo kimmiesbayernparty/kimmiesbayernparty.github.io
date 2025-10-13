@@ -26,7 +26,12 @@
     function typeBubbleText(html, speed = 25) {
       bubbleEl = bubbleEl || document.querySelector('#step-sort .bubble');
       if (!bubbleEl) return;
-      bubbleEl.innerHTML = '';
+    
+      bubbleEl.style.backgroundColor = '#fff';
+      bubbleEl.style.transition = 'none'; // disable fade glitches
+      bubbleEl.style.willChange = 'contents, background-color';
+    
+      bubbleEl.innerHTML = '&nbsp;';
   
       let i = 0;
       let isTag = false;
@@ -45,35 +50,41 @@
       }
       tick();
     }
+
+    let helperShown = false;
   
-    // ---------- bubble + bottom button ----------
     function onChoice(choice) {
       state.choice = choice;
       state.submittedAt = new Date().toISOString();
-  
+    
       const map = {
         yes: 'juhu, du kommst!',
         yes_plus_one: 'juhu, du kommst mit begleitung!',
         no: 'schade, vielleicht nächstes mal <3'
       };
       const msg = (map[choice] || '').trim();
+    
+      // helper text (first time only)
       const helper = `<br><small>falls du den falschen korb gewählt hast, zieh die breze einfach rüber. andernfalls kannst du deine antwort mit dem button unten abschicken!</small>`;
-      const html = `${msg}${helper}`;
-  
+      const html = helperShown ? msg : `${msg}${helper}`;
+      helperShown = true;
+    
       typeBubbleText(html, 25);
-  
+    
       if (submitBtn) {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Abschicken';
         submitBtn.classList.remove('sent', 'sending');
       }
     }
+
+    
   
     async function onSubmitChoice() {
       if (!state.choice || !submitBtn) return;
   
       // ensure identity is current
-      state.name   = ($('#guestNameSpan')?.textContent || state.name || 'Gast').trim();
+      state.name   = ($('#guestNameSpan')?.textContent || state.name || 'Gast').trim()
       state.avatar = $('#avatarInput')?.value || state.avatar || '';
       state.submittedAt = new Date().toISOString();
   
@@ -118,8 +129,19 @@
   
       const sortable = new Draggable.Sortable(containers, {
         draggable: '.item',
-        mirror: { constrainDimensions: true },
-        plugins: [Draggable.Plugins.SwapAnimation]
+        plugins: [Draggable.Plugins.SwapAnimation],
+        mirror: {
+          appendTo: document.body,         // avoid parent flex/grid effects
+          constrainDimensions: true        // copy source width/height
+        }
+      });
+      
+      sortable.on('mirror:created', ({ mirror, source }) => {
+        const rect = source.getBoundingClientRect();
+        mirror.style.width  = rect.width + 'px';
+        mirror.style.height = rect.height + 'px';
+        const img = mirror.querySelector('img');
+        if (img) { img.style.width = '100%'; img.style.height = 'auto'; }
       });
   
       // start dragging

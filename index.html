@@ -48,7 +48,7 @@
           <img id="chosenAvatar" class="avatar" src="img/avatars/thingy.png" alt="Gewählter Avatar">
         </div>
         <p class="bubble">
-          hi <span id="guestNameSpan">marius</span>! zieh die breze in den passenden korb:
+          hi <span id="guestNameSpan">du</span>! zieh die breze in den passenden korb:
         </p>
       </div>
 
@@ -59,7 +59,7 @@
         </div>
       </div>
 
-    
+    <div class="lower-container">
         <div class="baskets">
           <div class="basket basket1" data-choice="yes">
             <img src="img/basket3.png" data-breze-src="img/basket1breze.png" alt="">
@@ -87,20 +87,21 @@
             Abschicken
           </button>
         </div>
+    </div>
       
     </section>
   </main>
   
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+  window.EMAILJS = {
+    SERVICE_ID:  'service_jkmskad',
+    TEMPLATE_ID: 'template_juq56y9',
+    PUBLIC_KEY:  'ZjuWjpqJKmGnVbg6x'
+  };
 
-  <script>
-    window.EMAILJS = {
-      SERVICE_ID:  'service_jkmskad',
-      TEMPLATE_ID: 'template_juq56y9',
-      PUBLIC_KEY:  'ZjuWjpqJKmGnVbg6x'
-    };
-    emailjs.init({ publicKey: window.EMAILJS.PUBLIC_KEY });
-  </script>
+  emailjs.init({ publicKey: window.EMAILJS.PUBLIC_KEY });
+</script>
   <script src="https://cdn.jsdelivr.net/npm/@shopify/draggable@1.0.0-beta.11/lib/draggable.bundle.js"></script>
   <script src="app-core.js"></script>
   <script src="drag-drop.js"></script>
