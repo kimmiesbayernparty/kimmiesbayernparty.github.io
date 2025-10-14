@@ -47,7 +47,7 @@
         <div class="img-container">
           <img id="chosenAvatar" class="avatar" src="img/avatars/cat.png" alt="Gewählter Avatar">
         </div>
-        <p class="bubble">
+        <p class="bubble" data-initial="hi __NAME__! zieh die breze in den passenden korb:">
           hi <span id="guestNameSpan">du</span>! zieh die breze in den passenden korb:
         </p>
       </div>
@@ -88,10 +88,13 @@
           </button>
         </div>
     </div>
-      
     </section>
+    <section id="step-done" class="hidden celebrate">
+        <img src="img/font.png" alt="Danke">
+    </section>
+    
   </main>
-  
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.0/dist/confetti.browser.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
   window.EMAILJS = {

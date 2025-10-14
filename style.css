@@ -1,5 +1,5 @@
 :root {
-  --bg: #f6f6fa;
+  --bg: #eeeef7;
   --ink: #1b1b1f;
 }
 
@@ -205,7 +205,7 @@ ____________________________________*/
 } 
 
 .avatar {
-  height: 12dvh;
+  height: 13dvh;
 }
 
 .bubble {
@@ -215,8 +215,9 @@ ____________________________________*/
   transition: none !important; 
   padding: 1.3rem;
   text-align: center;
-  border-radius: 5px;
-  box-shadow: rgba(0, 0, 0, 0.25) 1px 0.0625em 0.0625em, rgba(0, 0, 0, 0.105) 4px 0.125em 0.5em, #3100b70c 0 0 25px 0;
+  border-radius: 10px;
+  box-shadow: rgba(0, 0, 0, 0.089) 1px 1px 1px, rgba(0, 0, 0, 0.083) 2px 2px 1px,
+  rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(235, 235, 235, 0.03) -6px -2px 16px 0px;
   position: relative;
   width: 100%;
   }
@@ -375,6 +376,28 @@ p {
 * {
   touch-action: none;   
 }
+
+.celebrate {
+  width: 100vw;
+  height: 88dvh;
+  background-image: url(img/frame.png);
+  background-position: center;
+  background-size: 90%;
+  background-repeat: no-repeat;
+  z-index: 1000;
+  padding: 10vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.celebrate img {
+  margin-top: 20dvh;
+  width: 70vw;
+  animation: pulse infinite 2s ease-in-out;
+}
+
+
 
 
 
@@ -560,8 +583,6 @@ p {
     align-items: center;
 
   }
-
- 
 
   #step-sort .bubble small {
     font-size: .9rem;     
