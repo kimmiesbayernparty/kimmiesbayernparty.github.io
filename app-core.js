@@ -1,5 +1,20 @@
 
-   (function () {
+   
+   
+   
+      document.addEventListener('DOMContentLoaded', () => {
+        const soundHint = document.getElementById('sound-hint');
+        const soundBtn = document.querySelector('#sound-hint .btn3');
+      
+        if (soundBtn && soundHint) {
+          soundBtn.addEventListener('click', () => {
+            soundHint.classList.add('hide');
+            setTimeout(() => soundHint.remove(), 500); // remove fully after fade
+          });
+        }
+      });
+      
+      (function () {
     // ---------- Utilities ----------
     const $  = (sel, ctx=document) => ctx.querySelector(sel);
     const $$ = (sel, ctx=document) => Array.from(ctx.querySelectorAll(sel));
@@ -49,11 +64,8 @@
       { value: "devil",      label: "devil",      src: "img/avatars/devil.png" },
       { value: "frog",       label: "frog",       src: "img/avatars/frog.png" },
       { value: "lion",       label: "lion",       src: "img/avatars/lion.png" },
-      { value: "monk",       label: "monk",       src: "img/avatars/monk.png" },
       { value: "plant",      label: "plant",      src: "img/avatars/plant.png" },
       { value: "prince",     label: "prince",     src: "img/avatars/prince.png" },
-      { value: "drink",      label: "drink",      src: "img/avatars/drink.png" },
-      { value: "puke",       label: "puke",       src: "img/avatars/puke.png" },
       { value: "rabbit",     label: "rabbit",     src: "img/avatars/rabbit.png" },
       { value: "trumpet",    label: "trumpet",    src: "img/avatars/trumpet.png" },
       { value: "kp",         label: "kp",         src: "img/avatars/kp.png" },
@@ -67,6 +79,9 @@
       { value: "mischa",     label: "mischa",     src: "img/avatars/mischa.png" },
       { value: "clippy",     label: "clippy",     src: "img/avatars/clippy.png" },
       { value: "cat",        label: "cat",        src: "img/avatars/cat.png" },
+      { value: "drink",      label: "drink",      src: "img/avatars/drink.png" },
+      { value: "puke",       label: "puke",       src: "img/avatars/puke.png" },
+      { value: "monk",       label: "monk",       src: "img/avatars/monk.png" },
     ];
     let avatarIndex = 0;
   
@@ -127,6 +142,8 @@
         }
       }
     }
+
+    
   
     // ---------- Email (EmailJS SDK required) ----------
     async function sendEmail(payload) {
@@ -227,11 +244,9 @@
         hydrateSortStep();
       }
 
-      const hint = document.getElementById('sound-hint');
-  if (hint && !hint.dataset.shown) {
-    hint.dataset.shown = "true";
-    setTimeout(() => hint.classList.add('hide'), 4500);
-  }
+   
+
+      
 
   
   

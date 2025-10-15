@@ -9,19 +9,86 @@
  
   let helperShown = false;
 
-  const dropSound = new Audio('sounds/plop.mp3');
-  dropSound.preload = 'auto';
-  function playOneShot(audio) {
-    const a = audio.cloneNode();     // allow overlapping
-    a.play().catch(() => {});
-    setTimeout(() => { try { a.pause(); a.remove(); } catch (_) {} }, 4000);
-  }
+ // ---- Mobile-safe drop sound (with pool + unlock) ----
+// ---- Mobile-safe drop sound (pool + unlock) ----
+const DROP_SRC = 'sounds/plop.mp3';
+let audioUnlocked = false;
+let dropPool = [];
+let poolIndex = 0;
 
-  const tadaSound = new Audio('sounds/tada.mp3');
-tadaSound.preload = 'auto';
-function playTada() {
-  const a = tadaSound.cloneNode();
+function unlockAudioOnce() {
+  if (audioUnlocked) return;
+  audioUnlocked = true;
+
+  // Build & prime a small pool for the drop sound
+  const POOL_SIZE = 4;
+  dropPool = new Array(POOL_SIZE).fill(0).map(() => {
+    const a = new Audio(DROP_SRC);
+    a.preload = 'auto';
+    a.playsInline = true;
+    a.muted = true;
+    return a;
+  });
+
+  // Prime them (play/pause) in response to this user gesture
+  dropPool.forEach(a => {
+    a.play().then(() => {
+      a.pause();
+      a.currentTime = 0;
+      a.muted = false;
+    }).catch(() => {});
+  });
+
+  // Also unlock typing & tada here
+  primeTyping();
+  primeTada();
+}
+
+// Attach unlock on first real gesture
+['pointerdown','touchstart','click'].forEach(evt => {
+  window.addEventListener(evt, unlockAudioOnce, { once: true, passive: true });
+});
+
+function playDrop() {
+  if (!audioUnlocked || !dropPool.length) return;
+  const a = dropPool[poolIndex++ % dropPool.length];
+  try { a.currentTime = 0; } catch (_) {}
   a.play().catch(() => {});
+}
+
+// ---------- typing sound ----------
+const typingSound = new Audio('sounds/avatar.mp3');
+typingSound.loop = true;
+typingSound.volume = 0.5;
+
+function primeTyping() {
+  typingSound.muted = true;
+  typingSound.currentTime = 0;
+  typingSound.play().then(() => {
+    typingSound.pause();
+    typingSound.currentTime = 0;
+    typingSound.muted = false;
+  }).catch(() => {});
+}
+
+// ---------- tada using <audio id="tadaAudio"> ----------
+const tadaEl = document.getElementById('tadaAudio');
+
+function primeTada() {
+  if (!tadaEl) return;
+  const wasMuted = tadaEl.muted;
+  tadaEl.muted = true;
+  tadaEl.play().then(() => {
+    tadaEl.pause();
+    tadaEl.currentTime = 0;
+    tadaEl.muted = wasMuted;
+  }).catch(() => {});
+}
+
+function playTada() {
+  if (!tadaEl) return;
+  try { tadaEl.currentTime = 0; } catch (_) {}
+  tadaEl.play().catch(() => {});
 }
 
 
@@ -53,9 +120,6 @@ document.addEventListener('click', () => {
 }, { once: true });
 
   // ---------- typing sound ----------
-  const typingSound = new Audio('sounds/avatar.mp3');
-  typingSound.loop = true;
-  typingSound.volume = 0.5; // optional, nicer mix
 
   // ---------- safe breze lookup + hide/show ----------
   function getBrezeImg() {
@@ -242,7 +306,7 @@ document.addEventListener('click', () => {
         item.classList.add('in-basket');
         filledBasket = toBasket;
 
-        playOneShot(dropSound);              // 🔊 POP SOUND HERE
+        playDrop(); 
         onChoice(toBasket.dataset.choice);
       } else {
         item.classList.remove('in-basket');

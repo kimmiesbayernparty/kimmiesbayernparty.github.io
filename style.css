@@ -18,6 +18,8 @@ body {
   margin: 0 auto; padding: 0rem; 
 }
 
+
+
 .sound-hint {
   position: fixed;
   top: 12dvh;
@@ -26,34 +28,49 @@ body {
   height: 88dvh;
   opacity: 1;
   transition: opacity 0.6s ease-in-out;
-  z-index: 1000;
-  border-radius: 1rem;
+  z-index: 100;
   transition: opacity 400ms ease-in-out;
   border-radius: 10px;
   -webkit-backdrop-filter: blur(2px);
   backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
 }
 
+.trees {
+  background-image: url(img/sound-on.webp);
+  width: 90%;
+  aspect-ratio: 1 / 1.402;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 10px;
+  border: 2px solid #1b1b1f;
+  position: absolute;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  transform: translateY(-6%);
+  z-index: 100;
+}
 
-.hide {
+.sound-hint img {
+  transform: translateY(-6%);
+  position: absolute;
+  width: 90%;
+  animation: skate 2s ease-out;
+  pointer-events: none;
+  z-index: 10000;
+}
+
+.sound-hint.hide {
   opacity: 0;
-  z-index: -10000;
   pointer-events: none;
 }
 
-.sound-hint img:first-of-type {
-  width: 90%;
-  left: 5%;
-  position: absolute;
-  border-radius: 10px;
-  border: 2px #1b1b1f solid;
-}
 
-.sound-hint img:last-of-type {
-  width: 90%;
-  animation: skate 2s ease-out;
-  position: absolute;
-}
 
 button:active {
   transform: scale(0.95);
@@ -62,11 +79,11 @@ button:active {
 
 @keyframes skate {
   0% {
-      transform: translateX(50%);
+      transform: translateY(-6%) translateX(50%);
   }
 
   100% {
-      transform: translateX(0%);
+      transform:  translateY(-6%) translateX(0%);
   }
 }
 
@@ -209,6 +226,14 @@ header img {
   rgba(0, 0, 0, 0.156) 1px 1px 2px,
   rgba(62, 28, 28, 0.091) 2px 2px 4px, 
   rgba(0, 0, 0, 0.073) 8px 4px 10px;
+}
+
+.btn3 {
+  margin-right: 2vw;
+  margin-bottom: 2vw;
+  border-radius: 9px;
+  cursor: pointer;
+  z-index: 100000;
 }
 
 
@@ -440,17 +465,25 @@ p {
   background-size: 90%;
   background-repeat: no-repeat;
   z-index: 1000;
-  padding: 10vw;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
-.celebrate img {
-  margin-top: 20dvh;
+.celebrate img:first-of-type {
+  margin-top: 5dvh;
+  width: 50vw;
+  animation: pulse infinite 2s ease-in-out;
+}
+
+.celebrate img:last-of-type {
+  margin-top: 35dvh;
   width: 70vw;
   animation: pulse infinite 2s ease-in-out;
 }
+
+
 
 
 
@@ -697,49 +730,76 @@ p {
   height: 88dvh;
   opacity: 1;
   transition: opacity 0.6s ease-in-out;
-  z-index: 1000;
-  border-radius: 1rem;
+  z-index: 100;
   transition: opacity 400ms ease-in-out;
   border-radius: 10px;
   -webkit-backdrop-filter: blur(2px);
   backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
 }
 
-.hide {
-  opacity: 0;
-  z-index: -10000;
-  pointer-events: none;
-}
-
-.sound-hint img:first-of-type {
-  width: 30%;
-  left: 35%;
-  position: absolute;
+.trees {
+  background-image: url(img/sound-on.webp);
+  width: 35%;
+  aspect-ratio: 1 / 1.402;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
   border-radius: 10px;
-  border: 2px #1b1b1f solid;
-}
-
-.sound-hint img:last-of-type {
-  width: 30%;
-  animation: skate2 1.5s ease-out;
+  border: 2px solid #1b1b1f;
   position: absolute;
-  left: 35%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  transform: translateY(-6%);
+  z-index: 100;
 }
 
-@keyframes skate2 {
-  0% {
-      transform: translateX(50%);
-  }
-
-  100% {
-      transform: translateX(0%);
-  }
-}
-
-.hide {
-  opacity: 0;
-  z-index: -10000;
+.sound-hint img {
+  transform: translateY(-6%);
+  position: absolute;
+  width: 35%;
+  animation: skate 2s ease-out;
   pointer-events: none;
+  z-index: 10000;
+}
+
+.btn3 {
+  margin-bottom: unset;
+  margin-right: unset;
+  margin-right: 1vw;
+  margin-bottom: 1vw;
+}
+
+.celebrate {
+  width: 100vw;
+  height: 88dvh;
+  background-image: url(img/frame.png);
+  background-position: center;
+  background-size: 30%;
+  background-repeat: no-repeat;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 0%;
+  padding: 0%;
+}
+
+.celebrate img:first-of-type {
+  width: 20vw;
+  animation: pulse infinite 2s ease-in-out;
+  margin: 0%;
+  padding: 0%;
+}
+
+.celebrate img:last-of-type {
+  width: 25vw;
+  animation: pulse infinite 2s ease-in-out;
 }
 
 }
