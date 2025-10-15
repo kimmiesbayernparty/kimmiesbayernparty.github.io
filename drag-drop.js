@@ -25,20 +25,32 @@ function playTada() {
 }
 
 
-  document.addEventListener('click', () => {
-    const preloadTyping = new Audio('sounds/avatar.mp3');
-    preloadTyping.play().then(() => {
-      preloadTyping.pause();
-      preloadTyping.currentTime = 0;
-    }).catch(() => {});
+document.addEventListener('click', () => {
+  // unlock typing sound silently
+  typingSound.muted = true;
+  typingSound.currentTime = 0;
+  typingSound.play().then(() => {
+    typingSound.pause();
+    typingSound.currentTime = 0;
+    typingSound.muted = false; // ready for real use
+  }).catch(() => {});
 
-    // prime drop sound as well
-    const primedDrop = dropSound.cloneNode();
-    primedDrop.play().then(() => {
-      primedDrop.pause();
-      primedDrop.currentTime = 0;
-    }).catch(() => {});
-  }, { once: true });
+  // unlock drop sound silently
+  const primedDrop = dropSound.cloneNode();
+  primedDrop.muted = true;
+  primedDrop.play().then(() => {
+    primedDrop.pause();
+    primedDrop.remove();
+  }).catch(() => {});
+
+  // unlock tada sound silently (optional)
+  const primedTada = tadaSound.cloneNode();
+  primedTada.muted = true;
+  primedTada.play().then(() => {
+    primedTada.pause();
+    primedTada.remove();
+  }).catch(() => {});
+}, { once: true });
 
   // ---------- typing sound ----------
   const typingSound = new Audio('sounds/avatar.mp3');

@@ -232,6 +232,16 @@
     hint.dataset.shown = "true";
     setTimeout(() => hint.classList.add('hide'), 5000);
   }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const soundHint = document.getElementById('sound-hint');
+    if (soundHint) {
+      soundHint.addEventListener('click', () => {
+        soundHint.classList.add('hide');
+        setTimeout(() => soundHint.remove(), 500); //
+      });
+    }
+  });
   
       const backBtn = $('#backBtn');
       if (backBtn) {
