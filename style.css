@@ -357,6 +357,7 @@ p {
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
+  
   }
 
   .btn2 {
@@ -367,7 +368,7 @@ p {
   }
 
   .btn2 img {
-    height: 2.5rem;
+    height: 2rem;
     width: auto;
   }
 
