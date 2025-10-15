@@ -759,7 +759,7 @@ p {
 }
 
 .sound-hint img {
-  transform: translateY(-6%);
+  margin-top: -6%;
   position: absolute;
   width: 35%;
   animation: skate 2s ease-out;
